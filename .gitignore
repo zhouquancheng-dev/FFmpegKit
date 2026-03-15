@@ -9,7 +9,7 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
+**/build/
 /captures
 .externalNativeBuild
 .cxx
@@ -17,7 +17,6 @@ local.properties
 /.kotlin
 /app/.cxx
 /app/.externalNativeBuild
-/app/build
 /app/captures
 /app/.idea
 /app/.gradle
