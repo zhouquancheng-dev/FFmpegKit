@@ -32,3 +32,6 @@ local.properties
 
 # FFmpeg prebuilt shared libraries
 app/src/main/jniLibs/
+
+# Signing keystore
+*.jks

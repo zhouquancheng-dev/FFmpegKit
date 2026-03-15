@@ -86,6 +86,18 @@ app/src/main/
 - Coil3 (3.4.0) for image/video loading
 - Kotlinx Coroutines (1.10.2) + Serialization (1.10.0)
 
+## Git Workflow
+
+- **Repository**: https://github.com/zhouquancheng-dev/FFmpegKit.git
+- **Branches**:
+  - `main` — stable, production-ready code
+  - `develop` — integration branch for ongoing development
+  - `feature/video-processing` — video encoding/decoding features
+  - `feature/subtitle-rendering` — ASS/SSA subtitle rendering with libass
+- **Branch naming**: `feature/<name>`, `bugfix/<name>`, `hotfix/<name>`
+- **Commit message style**: `type: description` (e.g. `feat:`, `fix:`, `refactor:`, `docs:`)
+- **Note**: `jniLibs/` and `*.jks` are gitignored — clone 后需手动放入 FFmpeg .so 文件才能编译
+
 ## Single Module
 
 This is a single-module project (`:app` only). All source code lives under `app/src/main/`.
