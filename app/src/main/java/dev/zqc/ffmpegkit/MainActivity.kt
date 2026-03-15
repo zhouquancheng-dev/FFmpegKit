@@ -5,10 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,9 +48,8 @@ private fun FFmpegInfoScreen(
     libassStatus: String
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
@@ -64,12 +63,10 @@ private fun FFmpegInfoScreen(
 
         item {
             InfoSection(title = "FFmpeg Version", content = version)
-            HorizontalDivider()
         }
 
         item {
             InfoSection(title = "libass Status", content = libassStatus)
-            HorizontalDivider()
         }
 
         item {
@@ -90,6 +87,6 @@ private fun InfoSection(title: String, content: String) {
         text = content,
         fontSize = 14.sp,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(top = 4.dp)
+        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
     )
 }
