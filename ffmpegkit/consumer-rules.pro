@@ -1,1 +1,1 @@
--keep class dev.zqc.ffmpegkit.FFmpegKit { *; }
+-keep class io.github.nova.ffmpegkit.FFmpegKit { *; }

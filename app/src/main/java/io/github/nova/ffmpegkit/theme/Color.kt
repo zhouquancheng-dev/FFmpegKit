@@ -1,4 +1,4 @@
-package dev.zqc.ffmpegkit.theme
+package io.github.nova.ffmpegkit.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.colorspace.ColorSpaces

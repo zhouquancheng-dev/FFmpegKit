@@ -15,7 +15,7 @@ extern "C" {
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_dev_zqc_ffmpegkit_FFmpegKit_printInfo(
+Java_io_github_nova_ffmpegkit_FFmpegKit_printInfo(
         JNIEnv* env,
         jobject /* this */) {
 
@@ -64,7 +64,7 @@ Java_dev_zqc_ffmpegkit_FFmpegKit_printInfo(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_dev_zqc_ffmpegkit_FFmpegKit_getVersion(
+Java_io_github_nova_ffmpegkit_FFmpegKit_getVersion(
         JNIEnv* env,
         jobject /* this */) {
     std::string version = av_version_info();
@@ -72,7 +72,7 @@ Java_dev_zqc_ffmpegkit_FFmpegKit_getVersion(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_dev_zqc_ffmpegkit_FFmpegKit_getBuildConfiguration(
+Java_io_github_nova_ffmpegkit_FFmpegKit_getBuildConfiguration(
         JNIEnv* env,
         jobject /* this */) {
     const char* config = avcodec_configuration();
@@ -80,7 +80,7 @@ Java_dev_zqc_ffmpegkit_FFmpegKit_getBuildConfiguration(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_dev_zqc_ffmpegkit_FFmpegKit_checkLibassAvailability(
+Java_io_github_nova_ffmpegkit_FFmpegKit_checkLibassAvailability(
         JNIEnv* env,
         jobject /* this */) {
     const char* config = avcodec_configuration();

@@ -1,4 +1,4 @@
-package dev.example.ffmpegkit
+package io.github.nova.ffmpegkit
 
 import org.junit.Test
 

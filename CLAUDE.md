@@ -36,7 +36,7 @@ The publishable library. Contains all native code, FFmpeg headers, and public Ko
 
 ```
 ffmpegkit/src/main/
-├── java/dev/zqc/ffmpegkit/
+├── java/io/github/nova/ffmpegkit/
 │   └── FFmpegKit.kt              # Public API: singleton object with @JvmStatic methods
 ├── cpp/
 │   ├── CMakeLists.txt             # CMake config, imports FFmpeg as SHARED IMPORTED
@@ -46,7 +46,7 @@ ffmpegkit/src/main/
 ```
 
 - **Public API**: `FFmpegKit` object — `getVersion()`, `getBuildConfiguration()`, `checkLibassAvailability()`, `isLibassAvailable()`, `printInfo()`
-- **JNI naming**: `Java_dev_zqc_ffmpegkit_FFmpegKit_methodName` (maps to `FFmpegKit` object, not Activity)
+- **JNI naming**: `Java_io_github_nova_ffmpegkit_FFmpegKit_methodName` (maps to `FFmpegKit` object, not Activity)
 - **maven-publish** plugin configured for JitPack (`groupId: com.github.zhouquancheng-dev`, `artifactId: ffmpegkit`)
 - **consumer-rules.pro**: keeps `FFmpegKit` class for consuming apps with ProGuard
 

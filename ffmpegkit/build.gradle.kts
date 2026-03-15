@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.zqc.ffmpegkit"
+    namespace = "io.github.nova.ffmpegkit"
     compileSdk = rootProject.extra["compileSdk"].toString().toInt()
 
     defaultConfig {

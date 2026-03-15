@@ -1,4 +1,4 @@
-package dev.zqc.ffmpegkit
+package io.github.nova.ffmpegkit
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-import dev.zqc.ffmpegkit.theme.FFmpegKitTheme
+import io.github.nova.ffmpegkit.theme.FFmpegKitTheme
 
 class MainActivity : ComponentActivity() {
 

@@ -35,7 +35,7 @@ FFmpeg .so 文件已包含在 AAR 中，无需手动下载。
 ## API
 
 ```kotlin
-import dev.zqc.ffmpegkit.FFmpegKit
+import io.github.nova.ffmpegkit.FFmpegKit
 
 FFmpegKit.getVersion()              // "8.0.1"
 FFmpegKit.getBuildConfiguration()   // FFmpeg 编译配置参数

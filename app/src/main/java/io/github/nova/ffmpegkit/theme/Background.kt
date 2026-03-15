@@ -1,4 +1,4 @@
-package dev.zqc.ffmpegkit.theme
+package io.github.nova.ffmpegkit.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf

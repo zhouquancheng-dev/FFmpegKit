@@ -1,4 +1,4 @@
-package dev.zqc.ffmpegkit
+package io.github.nova.ffmpegkit
 
 /**
  * FFmpegKit - Android FFmpeg wrapper library.

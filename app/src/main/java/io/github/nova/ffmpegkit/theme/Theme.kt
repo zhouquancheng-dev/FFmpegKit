@@ -1,4 +1,4 @@
-package dev.zqc.ffmpegkit.theme
+package io.github.nova.ffmpegkit.theme
 
 import android.app.Activity
 import android.os.Build
