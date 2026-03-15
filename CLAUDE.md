@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-FFmpegKit is an Android application (package: `dev.zqc.ffmpegkit`) built with Kotlin, Jetpack Compose, and a C++ JNI native layer. It integrates FFmpeg 8.0.1 (with libass subtitle support) on Android.
+FFmpegKit is an open-source Android library wrapping FFmpeg 8.0.1 with Kotlin API and C++ JNI bridge. It provides video/audio processing and ASS/SSA subtitle rendering via libass.
 
 ## Build Commands
 
@@ -12,7 +12,6 @@ FFmpegKit is an Android application (package: `dev.zqc.ffmpegkit`) built with Ko
 # Build (use gradlew.bat on Windows)
 ./gradlew assembleDebug           # Debug APK
 ./gradlew assembleRelease         # Release APK (signed with ffmpegkit.jks)
-./gradlew assembleOther           # Build with "Other" product flavor
 
 # Tests
 ./gradlew test                    # Unit tests (JUnit4)
@@ -34,20 +33,20 @@ Compose UI (MainActivity) → JNI Bridge → C++ Native (native-lib.cpp) → FFm
 
 ### Key Components
 
-- **MainActivity** (`app/src/main/java/dev/zqc/ffmpegkit/MainActivity.kt`) — Compose entry point, loads native library via `System.loadLibrary("ffmpegkit")`, declares JNI methods (`printFFmpegInfo`, `getFFmpegVersion`, `getFFmpegBuildConfiguration`, `checkLibassAvailability`)
-- **MyApp** (`app/src/main/java/dev/zqc/ffmpegkit/MyApp.kt`) — Application class with Coil3 image loader (GIF, SVG, video frame decoders) and foreground/background lifecycle tracking
+- **MainActivity** (`app/src/main/java/dev/zqc/ffmpegkit/MainActivity.kt`) — Demo UI, loads native library via `System.loadLibrary("ffmpegkit")`, declares JNI methods (`printFFmpegInfo`, `getFFmpegVersion`, `getFFmpegBuildConfiguration`, `checkLibassAvailability`)
+- **MyApp** (`app/src/main/java/dev/zqc/ffmpegkit/MyApp.kt`) — Application class with Coil3 image loader and lifecycle tracking
 - **Native C++** (`app/src/main/cpp/native-lib.cpp`) — JNI implementation, built as shared library `libffmpegkit.so` via CMake 3.22.1 (C++17)
-- **Theme** (`app/src/main/java/dev/zqc/ffmpegkit/theme/`) — Material3 theming with dynamic color support (Android 12+), custom `LocalBackgroundTheme` and `LocalTintTheme` composition locals
+- **Theme** (`app/src/main/java/dev/zqc/ffmpegkit/theme/`) — Material3 theming with dynamic color support (Android 12+)
 
 ### Native / FFmpeg Structure
 
 ```
 app/src/main/
-├── jniLibs/{arm64-v8a,armeabi-v7a}/   ← FFmpeg .so (runtime + CMake linking)
+├── jniLibs/{arm64-v8a,armeabi-v7a}/   ← FFmpeg .so (runtime + CMake linking, gitignored)
 └── cpp/
     ├── CMakeLists.txt                  ← CMake build config, imports FFmpeg as SHARED IMPORTED
     ├── native-lib.cpp                  ← JNI methods (can split into multiple .cpp files)
-    ├── libavcodec/                     ← FFmpeg headers (compile-time only)
+    ├── libavcodec/                     ← FFmpeg headers (compile-time only, not in APK)
     ├── libavformat/
     ├── libavfilter/
     ├── libavutil/
@@ -56,7 +55,6 @@ app/src/main/
 ```
 
 - **jniLibs/** — sole copy of .so files, used both for APK packaging (Gradle) and CMake linking
-- **cpp/ headers** — FFmpeg C headers, only used at compile time, not included in APK
 - JNI function naming convention: `Java_dev_zqc_ffmpegkit_ClassName_methodName`
 - FFmpeg headers are C, must be wrapped in `extern "C" {}` when included from C++
 
@@ -65,9 +63,10 @@ app/src/main/
 - **FFmpeg 8.0.1** cross-compiled for Android (NDK r29, API 24)
 - **ABIs**: arm64-v8a, armeabi-v7a (configured via `ndk.abiFilters` in build.gradle.kts)
 - **Libraries**: libavcodec, libavformat, libavfilter, libavutil, libswresample, libswscale
-- **Enabled features**: libass (ASS/SSA subtitles), libfreetype, libfribidi, mediacodec, jni
-- **Build script**: `D:\FFmpegSourceCode\build_android.sh` — compiles FFmpeg + dependencies (freetype → fribidi → harfbuzz → libass → FFmpeg)
-- libass and its dependencies are statically linked into the FFmpeg .so files (no separate libass.so)
+- **Enabled features**: libass, libfreetype, libfribidi, mediacodec, jni
+- **Build chain**: freetype → fribidi → harfbuzz → libass → FFmpeg (see `build_android.sh`)
+- libass and its dependencies are statically linked into the FFmpeg .so files
+- Prebuilt .so available at [GitHub Releases](https://github.com/zhouquancheng-dev/FFmpegKit/releases)
 
 ### Build Configuration
 
@@ -76,8 +75,7 @@ app/src/main/
 - **SDK**: minSdk 26, targetSdk/compileSdk 36
 - **Version catalog**: `gradle/libs.versions.toml` (central dependency management)
 - **Native build**: CMake 3.22.1, C++17
-- **Product flavor**: "Other" (sets app name to FFmpegKit)
-- **Signing**: `ffmpegkit.jks` at project root
+- **Signing**: `ffmpegkit.jks` at project root (gitignored)
 
 ### Key Dependencies
 
@@ -89,15 +87,19 @@ app/src/main/
 ## Git Workflow
 
 - **Repository**: https://github.com/zhouquancheng-dev/FFmpegKit.git
-- **Branches**:
-  - `main` — stable, production-ready code
-  - `develop` — integration branch for ongoing development
-  - `feature/video-processing` — video encoding/decoding features
-  - `feature/subtitle-rendering` — ASS/SSA subtitle rendering with libass
-- **Branch naming**: `feature/<name>`, `bugfix/<name>`, `hotfix/<name>`
-- **Commit message style**: `type: description` (e.g. `feat:`, `fix:`, `refactor:`, `docs:`)
-- **Note**: `jniLibs/` and `*.jks` are gitignored — clone 后需手动放入 FFmpeg .so 文件才能编译
+- **Branch strategy** (Git Flow):
+  - `main` — stable releases, tagged with version (e.g. `v1.0.0`)
+  - `develop` — integration branch, all feature PRs merge here
+  - `feature/*` — new features, branch from `develop`
+  - `bugfix/*` — bug fixes, branch from `develop`
+  - `hotfix/*` — urgent fixes, branch from `main`, merge to both `main` and `develop`
+  - `release/*` — release preparation, branch from `develop`
+- **Commit convention**: `type: description`
+  - `feat:` new feature, `fix:` bug fix, `refactor:` code restructure
+  - `docs:` documentation, `test:` tests, `chore:` build/tooling
+- **PR flow**: feature branch → PR to `develop` → code review → merge → release branch → `main` + tag
+- **Gitignored**: `jniLibs/`, `*.jks`, `.claude/`
 
-## Single Module
+## Module Structure
 
-This is a single-module project (`:app` only). All source code lives under `app/src/main/`.
+Single-module project (`:app`). All source code lives under `app/src/main/`.

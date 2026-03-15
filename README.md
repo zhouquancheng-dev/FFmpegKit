@@ -1,61 +1,44 @@
 # FFmpegKit
 
-Android application integrating FFmpeg 8.0.1 with libass subtitle support, built with Kotlin + Jetpack Compose + C++ JNI.
+[![Release](https://img.shields.io/github/v/release/zhouquancheng-dev/FFmpegKit)](https://github.com/zhouquancheng-dev/FFmpegKit/releases)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+An Android library wrapping FFmpeg 8.0.1 with Kotlin API and C++ JNI bridge. Provides video/audio processing, format conversion, and ASS/SSA subtitle rendering via libass.
 
 ## Features
 
-- FFmpeg 8.0.1 (libavcodec, libavformat, libavfilter, libavutil, libswresample, libswscale)
-- libass / libfreetype / libfribidi for ASS/SSA subtitle rendering
+- FFmpeg 8.0.1 full libraries (avcodec, avformat, avfilter, avutil, swresample, swscale)
+- ASS/SSA subtitle rendering (libass + libfreetype + libfribidi)
 - Android MediaCodec hardware acceleration
+- Kotlin-friendly API
 - Support arm64-v8a and armeabi-v7a
 
-## Prerequisites
+## Quick Start
 
-- Android Studio (Arctic Fox or later)
-- Android SDK 36
-- NDK with CMake 3.22.1
-- JDK 17
+### Option 1: Download Prebuilt Libraries
 
-## Setup
-
-### 1. Clone
+Download from [GitHub Releases](https://github.com/zhouquancheng-dev/FFmpegKit/releases):
 
 ```bash
-git clone https://github.com/zhouquancheng-dev/FFmpegKit.git
+tar xzf ffmpeg-8.0.1-android-libs.tar.gz
+cp ffmpeg-android-libs/arm64-v8a/*.so   app/src/main/jniLibs/arm64-v8a/
+cp ffmpeg-android-libs/armeabi-v7a/*.so app/src/main/jniLibs/armeabi-v7a/
 ```
 
-### 2. Build FFmpeg .so files
+### Option 2: Build from Source
 
-The prebuilt .so files are not included in the repository. You need to build them on a Linux machine:
+Requires a Linux machine with Android NDK r29:
 
 ```bash
-# Install dependencies
 sudo apt install -y make pkg-config yasm nasm gcc g++ meson ninja-build
 
-# Run the build script (requires Android NDK r29 at /opt/android-ndk-r29)
-cd /path/to/FFmpegSourceCode
+# NDK must be at /opt/android-ndk-r29 (or modify build_android.sh)
 bash build_android.sh
 ```
 
-This will compile: freetype → fribidi → harfbuzz → libass → FFmpeg
+Build chain: freetype → fribidi → harfbuzz → libass → FFmpeg
 
-### 3. Copy .so files
-
-Copy the built .so files into the project:
-
-```bash
-# arm64-v8a
-cp android_build/arm64-v8a/lib/*.so \
-   FFmpegKit/app/src/main/jniLibs/arm64-v8a/
-
-# armeabi-v7a
-cp android_build/armeabi-v7a/lib/*.so \
-   FFmpegKit/app/src/main/jniLibs/armeabi-v7a/
-```
-
-### 4. Build & Run
-
-Open the project in Android Studio and run, or:
+### Build the Project
 
 ```bash
 ./gradlew assembleDebug
@@ -64,39 +47,71 @@ Open the project in Android Studio and run, or:
 ## Project Structure
 
 ```
-app/src/main/
-├── java/dev/zqc/ffmpegkit/
-│   ├── MainActivity.kt          # Compose UI + JNI declarations
-│   ├── MyApp.kt                 # Application class
-│   └── theme/                   # Material3 theme
-├── cpp/
-│   ├── CMakeLists.txt            # CMake config, imports FFmpeg libs
-│   ├── native-lib.cpp            # JNI implementation
-│   └── libav*/                   # FFmpeg headers
-├── jniLibs/{arm64-v8a,armeabi-v7a}/  # FFmpeg .so (gitignored)
-└── res/                          # Android resources
+FFmpegKit/
+├── app/                              # Demo application (sample usage)
+│   └── src/main/
+│       ├── java/dev/zqc/ffmpegkit/
+│       │   ├── MainActivity.kt       # Demo UI showing FFmpeg info
+│       │   ├── MyApp.kt              # Application class
+│       │   └── theme/                # Material3 theme
+│       ├── cpp/
+│       │   ├── CMakeLists.txt        # CMake build config
+│       │   ├── native-lib.cpp        # JNI bridge implementation
+│       │   └── libav*/               # FFmpeg headers (compile-time)
+│       └── jniLibs/                  # FFmpeg .so files (gitignored)
+├── build.gradle.kts                  # Root build config
+├── gradle/libs.versions.toml         # Version catalog
+└── settings.gradle.kts
 ```
 
-## Tech Stack
+## Requirements
 
-| Component | Version |
-|-----------|---------|
-| Kotlin | 2.3.10 |
-| Jetpack Compose | BOM 2026.03.00 |
-| Material Design | 3 |
-| FFmpeg | 8.0.1 |
-| NDK | r29 |
+| Requirement | Version |
+|-------------|---------|
+| Android Studio | 2024.x+ |
+| JDK | 17 |
 | Min SDK | 26 (Android 8.0) |
 | Target SDK | 36 |
+| NDK | r29 (for building .so) |
+| CMake | 3.22.1 |
 
-## Branches
+## FFmpeg Libraries
+
+| Library | Version | Description |
+|---------|---------|-------------|
+| libavcodec | 62.11.100 | Encoding/Decoding |
+| libavformat | 62.3.100 | Container formats (mp4, mkv...) |
+| libavfilter | 11.4.100 | Filters (subtitle, scale...) |
+| libavutil | 60.8.100 | Utility functions |
+| libswresample | 6.1.100 | Audio resampling |
+| libswscale | 9.1.100 | Image scaling/conversion |
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch from `develop`
+   ```bash
+   git checkout develop
+   git checkout -b feature/your-feature
+   ```
+3. Commit with conventional messages
+   ```
+   feat: add video transcoding API
+   fix: resolve memory leak in decoder
+   refactor: simplify JNI bridge layer
+   ```
+4. Push and open a Pull Request to `develop`
+
+### Branch Strategy
 
 | Branch | Purpose |
 |--------|---------|
-| `main` | Stable, production-ready |
-| `develop` | Integration branch |
-| `feature/video-processing` | Video encoding/decoding |
-| `feature/subtitle-rendering` | ASS/SSA subtitle rendering |
+| `main` | Stable releases, tagged with versions |
+| `develop` | Integration branch, PRs merge here |
+| `feature/*` | New features |
+| `bugfix/*` | Bug fixes |
+| `hotfix/*` | Urgent fixes from `main` |
+| `release/*` | Release preparation |
 
 ## License
 
