@@ -1,33 +1,80 @@
 # FFmpegKit
 
 [![Release](https://img.shields.io/github/v/release/zhouquancheng-dev/FFmpegKit)](https://github.com/zhouquancheng-dev/FFmpegKit/releases)
+[![JitPack](https://jitpack.io/v/zhouquancheng-dev/FFmpegKit.svg)](https://jitpack.io/#zhouquancheng-dev/FFmpegKit)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 An Android library wrapping FFmpeg 8.0.1 with Kotlin API and C++ JNI bridge. Provides video/audio processing, format conversion, and ASS/SSA subtitle rendering via libass.
 
-## Features
+## Installation
 
-- FFmpeg 8.0.1 full libraries (avcodec, avformat, avfilter, avutil, swresample, swscale)
-- ASS/SSA subtitle rendering (libass + libfreetype + libfribidi)
-- Android MediaCodec hardware acceleration
-- Kotlin-friendly API
-- Support arm64-v8a and armeabi-v7a
+### Step 1: Add JitPack repository
 
-## Quick Start
+In your root `settings.gradle.kts`:
 
-### Option 1: Download Prebuilt Libraries
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
 
-Download from [GitHub Releases](https://github.com/zhouquancheng-dev/FFmpegKit/releases):
+### Step 2: Add dependency
+
+In your module `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("com.github.zhouquancheng-dev:FFmpegKit:v1.0.0")
+}
+```
+
+### Step 3: Download prebuilt .so files
+
+The FFmpeg .so files are not bundled in the library artifact. Download from [GitHub Releases](https://github.com/zhouquancheng-dev/FFmpegKit/releases) and place them in your project:
 
 ```bash
 tar xzf ffmpeg-8.0.1-android-libs.tar.gz
+
+# Copy to YOUR project's jniLibs (not FFmpegKit's)
+mkdir -p app/src/main/jniLibs/{arm64-v8a,armeabi-v7a}
 cp ffmpeg-android-libs/arm64-v8a/*.so   app/src/main/jniLibs/arm64-v8a/
 cp ffmpeg-android-libs/armeabi-v7a/*.so app/src/main/jniLibs/armeabi-v7a/
 ```
 
-### Option 2: Build from Source
+## Usage
 
-Requires a Linux machine with Android NDK r29:
+```kotlin
+import dev.zqc.ffmpegkit.FFmpegKit
+
+// Get FFmpeg version
+val version = FFmpegKit.getVersion()  // "8.0.1"
+
+// Get build configuration (./configure flags)
+val config = FFmpegKit.getBuildConfiguration()
+
+// Check libass availability
+val available = FFmpegKit.isLibassAvailable()  // true/false
+val detail = FFmpegKit.checkLibassAvailability()  // detailed string
+
+// Print all info to Logcat (tag: FFmpegKit)
+FFmpegKit.printInfo()
+```
+
+## Features
+
+- FFmpeg 8.0.1 (libavcodec, libavformat, libavfilter, libavutil, libswresample, libswscale)
+- ASS/SSA subtitle rendering (libass + libfreetype + libfribidi)
+- Android MediaCodec hardware acceleration
+- Kotlin-friendly singleton API (`FFmpegKit` object)
+- Support arm64-v8a and armeabi-v7a
+
+## Build from Source
+
+### Build FFmpeg .so files (Linux)
 
 ```bash
 sudo apt install -y make pkg-config yasm nasm gcc g++ meson ninja-build
@@ -38,7 +85,7 @@ bash build_android.sh
 
 Build chain: freetype → fribidi → harfbuzz → libass → FFmpeg
 
-### Build the Project
+### Build the project
 
 ```bash
 ./gradlew assembleDebug
@@ -48,31 +95,31 @@ Build chain: freetype → fribidi → harfbuzz → libass → FFmpeg
 
 ```
 FFmpegKit/
-├── app/                              # Demo application (sample usage)
+├── ffmpegkit/                        # Library module (published to JitPack)
 │   └── src/main/
 │       ├── java/dev/zqc/ffmpegkit/
-│       │   ├── MainActivity.kt       # Demo UI showing FFmpeg info
-│       │   ├── MyApp.kt              # Application class
-│       │   └── theme/                # Material3 theme
+│       │   └── FFmpegKit.kt          # Public API (singleton object)
 │       ├── cpp/
-│       │   ├── CMakeLists.txt        # CMake build config
-│       │   ├── native-lib.cpp        # JNI bridge implementation
-│       │   └── libav*/               # FFmpeg headers (compile-time)
-│       └── jniLibs/                  # FFmpeg .so files (gitignored)
-├── build.gradle.kts                  # Root build config
-├── gradle/libs.versions.toml         # Version catalog
-└── settings.gradle.kts
+│       │   ├── CMakeLists.txt         # CMake config
+│       │   ├── native-lib.cpp         # JNI implementation
+│       │   └── libav*/                # FFmpeg headers
+│       └── jniLibs/                   # FFmpeg .so files (gitignored)
+├── app/                              # Demo application (sample usage)
+│   └── src/main/java/.../
+│       └── MainActivity.kt           # Demo UI using FFmpegKit API
+├── build.gradle.kts
+├── settings.gradle.kts
+└── jitpack.yml                       # JitPack build config
 ```
 
 ## Requirements
 
 | Requirement | Version |
 |-------------|---------|
-| Android Studio | 2024.x+ |
-| JDK | 17 |
 | Min SDK | 26 (Android 8.0) |
 | Target SDK | 36 |
-| NDK | r29 (for building .so) |
+| JDK | 17 |
+| NDK | r29 (for building .so only) |
 | CMake | 3.22.1 |
 
 ## FFmpeg Libraries
@@ -94,12 +141,7 @@ FFmpegKit/
    git checkout develop
    git checkout -b feature/your-feature
    ```
-3. Commit with conventional messages
-   ```
-   feat: add video transcoding API
-   fix: resolve memory leak in decoder
-   refactor: simplify JNI bridge layer
-   ```
+3. Commit with conventional messages (`feat:`, `fix:`, `refactor:`, `docs:`)
 4. Push and open a Pull Request to `develop`
 
 ### Branch Strategy

@@ -22,16 +22,6 @@ android {
 
         flavorDimensions += "channel"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
-        }
-
-        externalNativeBuild {
-            cmake {
-                cppFlags += "-std=c++17"
-            }
-        }
     }
 
     buildTypes {
@@ -64,13 +54,6 @@ android {
         }
     }
 
-    externalNativeBuild {
-        cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
-        }
-    }
-
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -79,6 +62,9 @@ android {
 }
 
 dependencies {
+    // FFmpegKit library
+    implementation(project(":ffmpegkit"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.ktx)
@@ -87,8 +73,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    
-    // 协程、kotlinx-serialization序列化
+
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)

@@ -25,26 +25,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
-        printFFmpegInfo()
+
+        // Use FFmpegKit library API
+        FFmpegKit.printInfo()
+
         setContent {
             FFmpegKitTheme {
                 FFmpegInfoScreen(
-                    version = getFFmpegVersion(),
-                    buildConfig = getFFmpegBuildConfiguration(),
-                    libassStatus = checkLibassAvailability()
+                    version = FFmpegKit.getVersion(),
+                    buildConfig = FFmpegKit.getBuildConfiguration(),
+                    libassStatus = FFmpegKit.checkLibassAvailability()
                 )
             }
-        }
-    }
-
-    external fun printFFmpegInfo()
-    external fun getFFmpegVersion(): String
-    external fun getFFmpegBuildConfiguration(): String
-    external fun checkLibassAvailability(): String
-
-    companion object {
-        init {
-            System.loadLibrary("ffmpegkit")
         }
     }
 }

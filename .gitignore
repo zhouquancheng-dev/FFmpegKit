@@ -31,7 +31,9 @@ local.properties
 /app/.idea/assetWizardSettings.xml
 
 # FFmpeg prebuilt shared libraries
-app/src/main/jniLibs/
+**/jniLibs/
 
 # Signing keystore
 *.jks
+
+.claude

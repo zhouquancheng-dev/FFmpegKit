@@ -15,16 +15,14 @@ extern "C" {
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_dev_zqc_ffmpegkit_MainActivity_printFFmpegInfo(
+Java_dev_zqc_ffmpegkit_FFmpegKit_printInfo(
         JNIEnv* env,
         jobject /* this */) {
 
     LOGI("========== FFmpeg Integration Check ==========");
 
-    // FFmpeg version
     LOGI("FFmpeg version: %s", av_version_info());
 
-    // Individual library versions
     LOGI("libavcodec     %d.%d.%d",
          AV_VERSION_MAJOR(avcodec_version()),
          AV_VERSION_MINOR(avcodec_version()),
@@ -55,11 +53,9 @@ Java_dev_zqc_ffmpegkit_MainActivity_printFFmpegInfo(
          AV_VERSION_MINOR(swscale_version()),
          AV_VERSION_MICRO(swscale_version()));
 
-    // Build configuration
     const char* config = avcodec_configuration();
     LOGI("Build configuration: %s", config);
 
-    // libass check
     std::string configStr(config);
     bool hasLibass = configStr.find("--enable-libass") != std::string::npos;
     LOGI("libass: %s", hasLibass ? "AVAILABLE" : "NOT AVAILABLE");
@@ -68,7 +64,7 @@ Java_dev_zqc_ffmpegkit_MainActivity_printFFmpegInfo(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_dev_zqc_ffmpegkit_MainActivity_getFFmpegVersion(
+Java_dev_zqc_ffmpegkit_FFmpegKit_getVersion(
         JNIEnv* env,
         jobject /* this */) {
     std::string version = av_version_info();
@@ -76,7 +72,7 @@ Java_dev_zqc_ffmpegkit_MainActivity_getFFmpegVersion(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_dev_zqc_ffmpegkit_MainActivity_getFFmpegBuildConfiguration(
+Java_dev_zqc_ffmpegkit_FFmpegKit_getBuildConfiguration(
         JNIEnv* env,
         jobject /* this */) {
     const char* config = avcodec_configuration();
@@ -84,16 +80,14 @@ Java_dev_zqc_ffmpegkit_MainActivity_getFFmpegBuildConfiguration(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_dev_zqc_ffmpegkit_MainActivity_checkLibassAvailability(
+Java_dev_zqc_ffmpegkit_FFmpegKit_checkLibassAvailability(
         JNIEnv* env,
         jobject /* this */) {
     const char* config = avcodec_configuration();
     std::string configStr(config);
 
-    // Check if libass was enabled in FFmpeg build configuration
     bool hasLibass = configStr.find("--enable-libass") != std::string::npos;
 
-    // Also check if ass subtitle filter is available in avfilter
     std::string result;
     if (hasLibass) {
         result = "libass: available (found --enable-libass in build configuration)";
