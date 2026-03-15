@@ -30,22 +30,7 @@ dependencies {
 }
 ```
 
-**3. 下载 FFmpeg .so 文件**
-
-从 [Releases](https://github.com/zhouquancheng-dev/FFmpegKit/releases) 下载预编译库，放入项目：
-
-```
-app/src/main/jniLibs/
-├── arm64-v8a/
-│   ├── libavcodec.so
-│   ├── libavformat.so
-│   ├── libavfilter.so
-│   ├── libavutil.so
-│   ├── libswresample.so
-│   └── libswscale.so
-└── armeabi-v7a/
-    └── (同上)
-```
+FFmpeg .so 文件已包含在 AAR 中，无需手动下载。
 
 ## API
 

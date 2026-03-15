@@ -42,7 +42,7 @@ ffmpegkit/src/main/
 │   ├── CMakeLists.txt             # CMake config, imports FFmpeg as SHARED IMPORTED
 │   ├── native-lib.cpp             # JNI implementation (maps to FFmpegKit object methods)
 │   └── libav*/libsw*/             # FFmpeg C headers (compile-time only)
-└── jniLibs/{arm64-v8a,armeabi-v7a}/  # FFmpeg .so files (gitignored)
+└── jniLibs/{arm64-v8a,armeabi-v7a}/  # FFmpeg .so files (committed, bundled in AAR)
 ```
 
 - **Public API**: `FFmpegKit` object — `getVersion()`, `getBuildConfiguration()`, `checkLibassAvailability()`, `isLibassAvailable()`, `printInfo()`
@@ -63,7 +63,7 @@ Sample app demonstrating library usage. Uses `FFmpegKit.xxx()` API calls — no 
 - **Build chain**: freetype → fribidi → harfbuzz → libass → FFmpeg (see `build_android.sh`)
 - libass and dependencies are statically linked into FFmpeg .so files
 - Prebuilt .so available at [GitHub Releases](https://github.com/zhouquancheng-dev/FFmpegKit/releases)
-- .so files are **gitignored** — must be downloaded or built separately
+- .so files are **committed to repo** and bundled into AAR — users get them automatically via dependency
 
 ## Build Configuration
 
@@ -86,4 +86,5 @@ Sample app demonstrating library usage. Uses `FFmpegKit.xxx()` API calls — no 
   - `release/*` — release preparation from `develop`
 - **Commit convention**: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`
 - **Release flow**: tag on `main` → JitPack auto-builds AAR → users update version
-- **Gitignored**: `**/jniLibs/`, `*.jks`, `.claude/`
+- **Gitignored**: `*.jks`, `.claude/`
+- **Important**: every significant update must sync both `CLAUDE.md` and `README.md`

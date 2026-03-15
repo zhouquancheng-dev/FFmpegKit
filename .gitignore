@@ -29,9 +29,6 @@ local.properties
 /app/.idea/navEditor.xml
 /app/.idea/assetWizardSettings.xml
 
-# FFmpeg prebuilt shared libraries
-**/jniLibs/
-
 # Signing keystore
 *.jks
 
